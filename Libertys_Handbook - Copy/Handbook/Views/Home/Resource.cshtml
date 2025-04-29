@@ -1,0 +1,26 @@
+@model Handbook.Models.Resource;
+<h1>@Model.GetTitle()</h1>
+<h2>@Model.GetProvider()</h2>
+<hr>
+<p>@Model.GetDetails()</p>
+<br>
+<p>Cat: @Model.GetCategory() At: @Model.GetZip()</p>
+<hr>
+
+
+
+@{
+    if (ViewData["UserID"]!=null){
+        <form method="post" action="/Home/SaveResource">
+            <input type="hidden" id="ResourceID" name="ResourceID" value="@Model.GetID()" />
+            <button type="submit">Save  Resource</button>  
+        </form>
+    }
+    if (ViewData["UserID"]!=null && ViewData["UserID"].ToString().Equals("0")){
+        <br>
+        <form method="post" action="/Home/EditResource">
+            <input type="hidden" id="ResourceID" name="ResourceID" value="@Model.GetID()" />
+            <button type="submit">Edit  Resource</button>  
+        </form>
+    }
+}

@@ -1,0 +1,66 @@
+@{
+    ViewData["Title"] = "Resource Database";
+}
+<h1>@ViewData["Title"]</h1>
+
+<h2>Welcome to our resources database service!</h2>
+
+<hr>
+<form method="post" action="/Home/ResourceSearch">
+    <label for="KeyWord">Key Words:</label>
+    <input type="text" id="KeyWord" name="KeyWord" />
+    <label for="Zip">Zip:</label>
+    <input type="text" id="Zip" name="Zip" />
+    <p>
+        <label for="Category">Category:  </label>
+        <label for="Any">Any</label>
+        <input type="radio" id="Any" name="Category" value="-1" checked>
+        <label for="Legal">Legal</label>
+        <input type="radio" id="Legal" name="Category" value="0">
+        <label for="Food">Food</label>
+        <input type="radio" id="Food" name="Category" value="1">
+        <label for="General">General</label>
+        <input type="radio" id="General" name="Category" value="2">
+    </p>    
+    <button type="submit">Search Resources</button>
+</form>
+<hr>
+@{
+    try{
+        if(ViewBag != null && ViewBag.loadBool){
+            List<string[]> list = ViewBag.resource;
+            foreach(string[] strings in list){
+                <div style="border:solid;"><h2>@strings[1]</h2><p>By @strings[4] action zip code: @strings[3]</p><hr>
+                    @Html.ActionLink("More About "+strings[1], "ResourcePage", "Home", new {ResourceID = strings[0]}, null)     
+                    <p>@strings[5]</p></div>
+            }
+            int setpage;
+            string next ="next";
+            if(ViewBag.setpage>=0 && list.Count==5){
+                setpage = ViewBag.setpage +1;
+            }else if(ViewBag.setpage>0 && list.Count!=5){
+                setpage = ViewBag.setpage -1;
+                next = "last";
+            }else{setpage = 0;}
+            <form method="post" action="/Home/ResourceBatch"><input type="hidden" name="page" value="@setpage"><button type="submit">@next page</button></form>
+        }else{
+            int setpage;
+            if(ViewBag.setpage != null && ViewBag.setpage>0){
+                setpage = ViewBag.setpage;
+            }else{setpage = 0;}
+            
+            <form method="post" action="/Home/ResourceBatch"><input type="hidden" name="page" value="@setpage"><button type="submit">Load all Resources</button></form>
+        }
+    }catch(Exception e){
+        Console.WriteLine(e);
+    } 
+    
+}
+<hr>
+@{
+    if (ViewData["UserID"]!=null && ViewData["UserID"].Equals(0)){
+        <form method="post" action="/Home/toCreateResource">
+            <button type="submit">Create New Resources</button>
+        </form>
+    }
+}
